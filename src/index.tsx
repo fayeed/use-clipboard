@@ -34,7 +34,7 @@ export const useClipboard = ({
     span.addEventListener("copy", function (e) {
       e.stopPropagation();
 
-      onCopy(span.textContent!, successful);
+      if (onCopy) onCopy(span.textContent!, successful);
     });
 
     document.body.appendChild(span);

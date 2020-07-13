@@ -6,7 +6,7 @@ export interface UseClipboardProps {
    * @param text: The selected clipboard text.
    * @param result: Indicates wheater the copy was successful or not
    */
-  onCopy: (text: string, result: boolean) => void;
+  onCopy?: (text: string, result: boolean) => void;
 
   /**
    * The text that needs to copied to the clipboard.

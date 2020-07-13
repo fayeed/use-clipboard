@@ -1,5 +1,5 @@
 {
-  "name": "use-clipboard",
+  "name": "use-clipboard-hook",
   "version": "1.0.0",
   "description": "Copy to clipboard React hook.",
   "author": "fayeed",
