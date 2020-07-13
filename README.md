@@ -1,4 +1,4 @@
-# use-clipboard
+# use-clipboard-hook
 
 > Copy to clipboard React hook.
 
@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npm install --save use-clipboard
+npm install --save use-clipboard-hook
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ npm install --save use-clipboard
 ```tsx
 import * as React from "react";
 
-import { useClipboard } from "use-clipboard";
+import { useClipboard } from "use-clipboard-hook";
 
 const Example = () => {
   const [inputRef, onClick] = useClipboard({
