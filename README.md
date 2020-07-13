@@ -1,6 +1,6 @@
 # use-clipboard
 
-> Copy/Cut to clipboard React hook.
+> Copy to clipboard React hook.
 
 [![NPM](https://img.shields.io/npm/v/use-clipboard.svg)](https://www.npmjs.com/package/use-clipboard) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -13,23 +13,28 @@ npm install --save use-clipboard
 ## Usage
 
 ```tsx
-import * as React from 'react'
+import * as React from "react";
 
-import { useMyHook } from 'use-clipboard'
+import { useClipboard } from "use-clipboard";
 
 const Example = () => {
-  const example = useMyHook()
+  const [inputRef, onClick] = useClipboard({
+    onCopy: (text) => console.log(`Copied: ${text}`),
+  });
   return (
     <div>
-      {example}
+      <input ref={inputRef} defaultValue="Change this..." />
+      <button onClick={onClick}>copy</button>
     </div>
-  )
-}
+  );
+};
 ```
+
+## [Live Demo](https://use-clipboard.now.sh)
 
 ## License
 
-MIT © [fayeed](https://github.com/fayeed)
+MIT © [fayeed](https://github.com/fayeed/use-clipboard/blob/master/LICENSE)
 
 ---
 
