@@ -1,7 +1,7 @@
 {
   "name": "use-clipboard",
   "version": "1.0.0",
-  "description": "Copy/Cut to clipboard React hook.",
+  "description": "Copy to clipboard React hook.",
   "author": "fayeed",
   "license": "MIT",
   "repository": "fayeed/use-clipboard",
@@ -21,7 +21,9 @@
     "predeploy": "cd example && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "toggle-selection": "^1.0.6"
+  },
   "peerDependencies": {
     "react": "^16.9.0"
   },
