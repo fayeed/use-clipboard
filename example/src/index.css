@@ -1,5 +1,84 @@
-/* body {
+body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-} */
+  margin: 30px 0 20px 0;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+h1 > span {
+  color: red;
+}
+
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#container {
+  width: 500px;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+code {
+  background-color: gainsboro;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+pre {
+  text-align: start;
+  background-color: gainsboro;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.itemContainer {
+  width: 100%;
+  text-align: start;
+}
+
+.itemContainer label {
+  text-align: start;
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-decoration: underline;
+}
+
+.itemContainer > h3 {
+  text-align: start;
+  font-weight: 500;
+}
+
+.itemContainer > textarea,
+.itemContainer > input {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btnContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 10px 0 30px 0;
+}
+
+.btnContainer > button {
+  width: 25%;
+}
+
+.btnContainer > span {
+  font-size: 12px;
+  background-color: hotpink;
+  color: #fff;
+  padding: 6px;
+  border-radius: 2px;
+}
