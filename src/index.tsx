@@ -60,6 +60,7 @@ export const useClipboard = ({
         const selection = document.getSelection()!;
 
         let span = document.createElement("span")!;
+        span.style.whiteSpace = "pre"; // preserves the line break & etc.
 
         if (element) {
           if (isInput) {
