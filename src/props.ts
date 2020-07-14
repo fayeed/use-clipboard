@@ -16,6 +16,12 @@ export interface UseClipboardProps {
   onError?: (error: string) => void;
 
   /**
+   * Disables the new clipboard API `navigator.clipboard` even if
+   * it is supported.
+   */
+  disableClipboardAPI?: boolean;
+
+  /**
    * The text that needs to copied to the clipboard.
    * If the ref is set this field is ignored.
    *
