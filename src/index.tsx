@@ -2,13 +2,11 @@ import { useRef, useCallback, useState, useEffect } from "react";
 import { UseClipboardProps, useClipboardReturnType } from "./types";
 import deselectCurrent from "toggle-selection";
 
-export const useClipboard = ({
-  onSuccess,
-  onError,
-  text,
-  disableClipboardAPI = false,
-  copiedDuration,
-}: UseClipboardProps): useClipboardReturnType => {
+export const useClipboard = (
+  options?: UseClipboardProps
+): useClipboardReturnType => {
+  const { onSuccess, onError, disableClipboardAPI = false, copiedDuration } =
+    options || {};
   const ref = useRef<any>(null);
   const [isCoppied, setIsCoppied] = useState(false);
   const [clipboard, setClipbaord] = useState("");
@@ -51,7 +49,8 @@ export const useClipboard = ({
     action: "copy" | "cut",
     element?: HTMLElement,
     input?: HTMLInputElement,
-    isInput?: boolean
+    isInput?: boolean,
+    text?: string
   ) => {
     deselectCurrent();
 
@@ -62,7 +61,9 @@ export const useClipboard = ({
     let span = document.createElement("span")!;
     span.style.whiteSpace = "pre"; // preserves the line break & etc.
 
-    if (element) {
+    if (text) {
+      span.textContent = text!;
+    } else if (element) {
       if (isInput) {
         span.textContent = input!.value;
 
@@ -72,8 +73,6 @@ export const useClipboard = ({
       } else {
         span.textContent = element.innerText!;
       }
-    } else if (text) {
-      span.textContent = text!;
     } else {
       handleError("Both the ref & text were undefined");
     }
@@ -115,8 +114,13 @@ export const useClipboard = ({
     }
   };
 
+  const copy = (text?: string) =>
+    action("copy", typeof text === "object" ? undefined : text);
+
+  const cut = () => action("cut");
+
   const action = useCallback(
-    (operation = "copy") => {
+    (operation = "copy", text?: string) => {
       const element = ref.current as HTMLElement;
 
       const isInput =
@@ -125,8 +129,10 @@ export const useClipboard = ({
 
       const input = ref.current as HTMLInputElement;
 
-      if (isSupported() && disableClipboardAPI) {
-        if (element) {
+      if (isSupported() && !disableClipboardAPI) {
+        if (text) {
+          copyToClipboard(text);
+        } else if (element) {
           if (isInput) {
             copyToClipboard(input.value);
             if (operation === "cut") {
@@ -135,25 +141,24 @@ export const useClipboard = ({
           } else {
             copyToClipboard(element.innerText);
           }
-        } else if (text) {
-          copyToClipboard(text);
         } else {
           handleError("Both the ref & text were undefined");
         }
       } else {
-        oldCopyToClipboard(operation, element, input, isInput);
+        oldCopyToClipboard(operation, element, input, isInput, text);
       }
     },
-    [text, ref, onSuccess]
+    [ref, onSuccess, onError, disableClipboardAPI]
   );
 
   return {
     ref,
-    action,
     isCoppied,
     clipboard,
     clearClipboard,
     isSupported,
+    copy,
+    cut,
   };
 };
 

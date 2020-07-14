@@ -27,14 +27,6 @@ export interface UseClipboardProps {
    * revert back the isCopied flag to false again if a value is set.
    */
   copiedDuration?: number;
-
-  /**
-   * The text that needs to copied to the clipboard.
-   * If the ref is set this field is ignored.
-   *
-   * If both are not set it will throw an error.
-   */
-  text?: string;
 }
 
 export interface useClipboardReturnType {
@@ -44,11 +36,14 @@ export interface useClipboardReturnType {
   ref: MutableRefObject<any>;
 
   /**
-   * Use it to perform the copy/cut operation
-   *
-   * @param operation: choose between wheather to perform copy or cut operation
+   * Use it to perform the copy operation
    */
-  action: (operation?: "copy" | "cut") => void;
+  copy: (text?: string) => void;
+
+  /**
+   * Use it to perform the cut operation
+   */
+  cut: () => void;
 
   /**
    * Indicates wheater the content was successfully copied or not.
