@@ -1,3 +1,5 @@
+import { MutableRefObject } from "react";
+
 export interface UseClipboardProps {
   /**
    * It's callback function that is called after the `copy` command
@@ -33,4 +35,38 @@ export interface UseClipboardProps {
    * If both are not set it will throw an error.
    */
   text?: string;
+}
+
+export interface useClipboardReturnType {
+  /**
+   * Use ref to pull the text content from.
+   */
+  ref: MutableRefObject<any>;
+
+  /**
+   * Use it to perform the copy/cut operation
+   *
+   * @param operation: choose between wheather to perform copy or cut operation
+   */
+  action: (operation?: "copy" | "cut") => void;
+
+  /**
+   * Indicates wheater the content was successfully copied or not.
+   */
+  isCoppied: boolean;
+
+  /**
+   * Current selected clipboard content.
+   */
+  clipboard: string;
+
+  /**
+   * Clears the user clipboard.
+   */
+  clearClipboard: () => void;
+
+  /**
+   * Check to see if the browser supports the new `navigator.clipboard` API.
+   */
+  isSupported: () => boolean;
 }

@@ -1,21 +1,6 @@
-import {
-  useRef,
-  useCallback,
-  MutableRefObject,
-  useState,
-  useEffect,
-} from "react";
-import { UseClipboardProps } from "./props";
+import { useRef, useCallback, useState, useEffect } from "react";
+import { UseClipboardProps, useClipboardReturnType } from "./types";
 import deselectCurrent from "toggle-selection";
-
-type useClipboardReturnType = {
-  ref: MutableRefObject<any>;
-  action: (action?: "copy" | "cut") => void;
-  isCoppied: boolean;
-  clipboard: string;
-  clearClipboard: () => void;
-  isSupported: () => boolean;
-};
 
 export const useClipboard = ({
   onSuccess,
@@ -55,7 +40,7 @@ export const useClipboard = ({
   };
 
   const clearClipboard = () => {
-    if (useClipboard.isSupported()) {
+    if (isSupported()) {
       navigator.clipboard.writeText("");
     } else {
       oldCopyToClipboard("copy");
@@ -131,7 +116,7 @@ export const useClipboard = ({
   };
 
   const action = useCallback(
-    (action = "copy") => {
+    (operation = "copy") => {
       const element = ref.current as HTMLElement;
 
       const isInput =
@@ -140,11 +125,11 @@ export const useClipboard = ({
 
       const input = ref.current as HTMLInputElement;
 
-      if (useClipboard.isSupported() && disableClipboardAPI) {
+      if (isSupported() && disableClipboardAPI) {
         if (element) {
           if (isInput) {
             copyToClipboard(input.value);
-            if (action === "cut") {
+            if (operation === "cut") {
               input.value = "";
             }
           } else {
@@ -156,7 +141,7 @@ export const useClipboard = ({
           handleError("Both the ref & text were undefined");
         }
       } else {
-        oldCopyToClipboard(action, element, input, isInput);
+        oldCopyToClipboard(operation, element, input, isInput);
       }
     },
     [text, ref, onSuccess]
