@@ -3,7 +3,8 @@ import { UseClipboardProps } from "./props";
 import deselectCurrent from "toggle-selection";
 
 export const useClipboard = ({
-  onCopy,
+  onSuccess,
+  onError,
   text,
 }: UseClipboardProps): [
   MutableRefObject<any>,
@@ -42,13 +43,16 @@ export const useClipboard = ({
       } else if (text) {
         span.textContent = text!;
       } else {
-        throw new Error("Both the ref & text were undefined");
+        const error = "Both the ref & text were undefined";
+
+        if (onError) onError(error);
+        else throw new Error(error);
       }
 
       span.addEventListener("copy", function (e) {
         e.stopPropagation();
 
-        if (onCopy) onCopy(span.textContent!, true);
+        if (onSuccess) onSuccess(span.textContent!);
       });
 
       span.addEventListener("cut", function (e) {
@@ -56,7 +60,7 @@ export const useClipboard = ({
 
         if (action === "cut" && isInput) input.value = "";
 
-        if (onCopy) onCopy(span.textContent!, true);
+        if (onSuccess) onSuccess(span.textContent!);
       });
 
       document.body.appendChild(span);
@@ -70,14 +74,17 @@ export const useClipboard = ({
       );
 
       if (!successful) {
-        throw new Error("Copy command was unsuccessful");
+        const error = "Copy command was unsuccessful";
+
+        if (onError) onError(error);
+        else throw new Error(error);
       } else {
         span.remove();
 
         if (action === "cut" && isInput) input.blur();
       }
     },
-    [text, ref, onCopy]
+    [text, ref, onSuccess]
   );
 
   return [ref, onClick];

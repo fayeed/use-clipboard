@@ -4,9 +4,16 @@ export interface UseClipboardProps {
    * is executed.
    *
    * @param text: The selected clipboard text.
-   * @param result: Indicates wheater the copy was successful or not
    */
-  onCopy?: (text: string, result: boolean) => void;
+  onSuccess?: (text: string) => void;
+
+  /**
+   * Triggers when the hook encounters an error.
+   * If passed hook won't throw an error.
+   *
+   * @param error: cause of the error
+   */
+  onError?: (error: string) => void;
 
   /**
    * The text that needs to copied to the clipboard.
