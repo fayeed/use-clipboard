@@ -1,24 +1,136 @@
-import { useRef, useCallback, MutableRefObject } from "react";
+import {
+  useRef,
+  useCallback,
+  MutableRefObject,
+  useState,
+  useEffect,
+} from "react";
 import { UseClipboardProps } from "./props";
 import deselectCurrent from "toggle-selection";
+
+type useClipboardReturnType = {
+  ref: MutableRefObject<any>;
+  action: (action?: "copy" | "cut") => void;
+  isCoppied: boolean;
+  clipboard: string;
+  clearClipboard: () => void;
+  isSupported: () => boolean;
+};
 
 export const useClipboard = ({
   onSuccess,
   onError,
   text,
   disableClipboardAPI = false,
-}: UseClipboardProps): [
-  MutableRefObject<any>,
-  (action?: "copy" | "cut") => void
-] => {
+  copiedDuration,
+}: UseClipboardProps): useClipboardReturnType => {
   const ref = useRef<any>(null);
+  const [isCoppied, setIsCoppied] = useState(false);
+  const [clipboard, setClipbaord] = useState("");
+
+  useEffect(() => {
+    if (copiedDuration) setTimeout(() => setIsCoppied(false), copiedDuration);
+  }, [isCoppied]);
+
+  const isSupported = () => navigator.clipboard !== undefined;
 
   const handleError = (error: string) => {
     if (onError) onError(error);
     else throw new Error(error);
   };
 
-  const onClick = useCallback(
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        if (onSuccess) onSuccess(text);
+        setIsCoppied(true);
+
+        setClipbaord(text);
+      })
+      .catch((err) => {
+        if (onError) onError(err);
+        setIsCoppied(false);
+      });
+  };
+
+  const clearClipboard = () => {
+    if (useClipboard.isSupported()) {
+      navigator.clipboard.writeText("");
+    } else {
+      oldCopyToClipboard("copy");
+    }
+  };
+
+  const oldCopyToClipboard = (
+    action: "copy" | "cut",
+    element?: HTMLElement,
+    input?: HTMLInputElement,
+    isInput?: boolean
+  ) => {
+    deselectCurrent();
+
+    const range = document.createRange();
+
+    const selection = document.getSelection()!;
+
+    let span = document.createElement("span")!;
+    span.style.whiteSpace = "pre"; // preserves the line break & etc.
+
+    if (element) {
+      if (isInput) {
+        span.textContent = input!.value;
+
+        if (action === "cut") {
+          input!.select();
+        }
+      } else {
+        span.textContent = element.innerText!;
+      }
+    } else if (text) {
+      span.textContent = text!;
+    } else {
+      handleError("Both the ref & text were undefined");
+    }
+
+    span.addEventListener("copy", function (e) {
+      e.stopPropagation();
+
+      if (onSuccess) onSuccess(span.textContent!);
+    });
+
+    span.addEventListener("cut", function (e) {
+      e.stopPropagation();
+
+      if (isInput) input!.value = "";
+
+      if (onSuccess) onSuccess(span.textContent!);
+    });
+
+    document.body.appendChild(span);
+
+    range.selectNodeContents(span);
+
+    selection.addRange(range);
+
+    var successful = document.execCommand(
+      typeof action === "object" ? "copy" : action
+    );
+
+    if (!successful) {
+      handleError("Copy command was unsuccessful");
+
+      setIsCoppied(false);
+    } else {
+      setClipbaord(span.textContent!);
+      setIsCoppied(true);
+      span.remove();
+
+      if (action === "cut" && isInput) input!.blur();
+    }
+  };
+
+  const action = useCallback(
     (action = "copy") => {
       const element = ref.current as HTMLElement;
 
@@ -31,90 +143,33 @@ export const useClipboard = ({
       if (useClipboard.isSupported() && disableClipboardAPI) {
         if (element) {
           if (isInput) {
-            navigator.clipboard
-              .writeText(input.value)
-              .then(() => onSuccess && onSuccess(input.value))
-              .catch((err) => onError && onError(err));
+            copyToClipboard(input.value);
             if (action === "cut") {
               input.value = "";
             }
           } else {
-            navigator.clipboard
-              .writeText(element.innerText)
-              .then(() => onSuccess && onSuccess(element.innerText))
-              .catch((err) => onError && onError(err));
+            copyToClipboard(element.innerText);
           }
         } else if (text) {
-          navigator.clipboard
-            .writeText(text)
-            .then(() => onSuccess && onSuccess(text))
-            .catch((err) => onError && onError(err));
+          copyToClipboard(text);
         } else {
           handleError("Both the ref & text were undefined");
         }
       } else {
-        deselectCurrent();
-
-        const range = document.createRange();
-
-        const selection = document.getSelection()!;
-
-        let span = document.createElement("span")!;
-        span.style.whiteSpace = "pre"; // preserves the line break & etc.
-
-        if (element) {
-          if (isInput) {
-            span.textContent = input.value;
-
-            if (action === "cut") {
-              input.select();
-            }
-          } else {
-            span.textContent = element.innerText!;
-          }
-        } else if (text) {
-          span.textContent = text!;
-        } else {
-          handleError("Both the ref & text were undefined");
-        }
-
-        span.addEventListener("copy", function (e) {
-          e.stopPropagation();
-
-          if (onSuccess) onSuccess(span.textContent!);
-        });
-
-        span.addEventListener("cut", function (e) {
-          e.stopPropagation();
-
-          if (isInput) input.value = "";
-
-          if (onSuccess) onSuccess(span.textContent!);
-        });
-
-        document.body.appendChild(span);
-
-        range.selectNodeContents(span);
-
-        selection.addRange(range);
-
-        var successful = document.execCommand(
-          typeof action === "object" ? "copy" : action
-        );
-
-        if (!successful) {
-          handleError("Copy command was unsuccessful");
-        } else {
-          span.remove();
-
-          if (action === "cut" && isInput) input.blur();
-        }
+        oldCopyToClipboard(action, element, input, isInput);
       }
     },
     [text, ref, onSuccess]
   );
 
-  return [ref, onClick];
+  return {
+    ref,
+    action,
+    isCoppied,
+    clipboard,
+    clearClipboard,
+    isSupported,
+  };
 };
 
 /**
@@ -122,9 +177,5 @@ export const useClipboard = ({
  * supported from Chrome 66+, Firefox 63+, Safari
  */
 useClipboard.isSupported = () => navigator.clipboard !== undefined;
-
-useClipboard.clearClipboard = function () {
-  console.log("clipboard clear");
-};
 
 export default useClipboard;

@@ -22,6 +22,11 @@ export interface UseClipboardProps {
   disableClipboardAPI?: boolean;
 
   /**
+   * revert back the isCopied flag to false again if a value is set.
+   */
+  copiedDuration?: number;
+
+  /**
    * The text that needs to copied to the clipboard.
    * If the ref is set this field is ignored.
    *
