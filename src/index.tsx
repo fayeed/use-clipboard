@@ -22,17 +22,18 @@ export const useClipboard = (
     else throw new Error(error);
   };
 
+  const handleSuccess = (text: string) => {
+    if (onSuccess) onSuccess(text);
+    setIsCoppied(true);
+    setClipbaord(text);
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard
       .writeText(text)
-      .then(() => {
-        if (onSuccess) onSuccess(text);
-        setIsCoppied(true);
-
-        setClipbaord(text);
-      })
+      .then(() => handleSuccess(text))
       .catch((err) => {
-        if (onError) onError(err);
+        handleError(err);
         setIsCoppied(false);
       });
   };
@@ -59,7 +60,8 @@ export const useClipboard = (
     const selection = document.getSelection()!;
 
     let span = document.createElement("span")!;
-    span.style.whiteSpace = "pre"; // preserves the line break & etc.
+
+    span.style.whiteSpace = "pre";
 
     if (text) {
       span.textContent = text!;
@@ -79,16 +81,12 @@ export const useClipboard = (
 
     span.addEventListener("copy", function (e) {
       e.stopPropagation();
-
-      if (onSuccess) onSuccess(span.textContent!);
     });
 
     span.addEventListener("cut", function (e) {
       e.stopPropagation();
 
       if (isInput) input!.value = "";
-
-      if (onSuccess) onSuccess(span.textContent!);
     });
 
     document.body.appendChild(span);
@@ -106,8 +104,8 @@ export const useClipboard = (
 
       setIsCoppied(false);
     } else {
-      setClipbaord(span.textContent!);
-      setIsCoppied(true);
+      handleSuccess(span.textContent!);
+
       span.remove();
 
       if (action === "cut" && isInput) input!.blur();
@@ -135,6 +133,7 @@ export const useClipboard = (
         } else if (element) {
           if (isInput) {
             copyToClipboard(input.value);
+
             if (operation === "cut") {
               input.value = "";
             }
@@ -161,11 +160,5 @@ export const useClipboard = (
     cut,
   };
 };
-
-/**
- * Checks to see if the browser uses the new navigator.clipboard API
- * supported from Chrome 66+, Firefox 63+, Safari
- */
-useClipboard.isSupported = () => navigator.clipboard !== undefined;
 
 export default useClipboard;

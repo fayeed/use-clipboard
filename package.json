@@ -1,6 +1,6 @@
 {
   "name": "use-clipboard-hook",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Copy to clipboard React hook.",
   "author": "fayeed",
   "license": "MIT",
@@ -8,6 +8,16 @@
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
+  "keywords": [
+    "clipboard",
+    "react",
+    "hooks",
+    "typescript",
+    "copy",
+    "cut",
+    "copy to clipboard",
+    "browser"
+  ],
   "engines": {
     "node": ">=8",
     "npm": ">=5"

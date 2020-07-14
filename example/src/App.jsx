@@ -46,7 +46,7 @@ export default function App() {
         />
         <div className="btnContainer">
           <button onClick={input.copy}>copy input</button>
-          <button onClick={input.clear}>cut input</button>
+          <button onClick={input.cut}>cut input</button>
           <button onClick={input.clearClipboard}>clear clipboard</button>
         </div>
       </div>
