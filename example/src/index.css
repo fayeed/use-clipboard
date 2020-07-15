@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  margin: 30px 0 20px 0;
+  margin: 20px 0;
 }
 
 h1 {
@@ -13,24 +13,91 @@ h1 > span {
   color: red;
 }
 
+.npm {
+  margin: 60px 0;
+  background-color: #dcdcdc;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 60%;
+  transition: all 0.2s;
+}
+
+.npm > span {
+  opacity: 0;
+  font-size: 18px;
+}
+
+.npm:hover > span {
+  opacity: 1;
+}
+
+.npm:hover {
+  background-color: green;
+  color: white;
+}
+
 #root {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+#root::before {
+  content: " ";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: crimson;
+  filter: blur(400px);
+  z-index: -10;
+}
+
 #container {
-  width: 500px;
+  width: 700px;
   justify-content: space-around;
   display: flex;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
 }
 
-code {
-  background-color: gainsboro;
-  padding: 6px;
+.codeContainer {
+  width: 100%;
+  margin: 0px 0 60px 0;
+  text-align: start;
+  display: flex;
+  padding: 20px 0 20px 20px;
+  background-color: #222;
   border-radius: 4px;
+  box-shadow: 0 10px 20px crimson;
+}
+
+.code {
+  width: 80%;
+  margin-right: 10px;
+  transition: all 0.4s;
+}
+
+.optionContainer {
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+  width: 20%;
+}
+
+.optionContainer > button {
+  padding: 10px 0;
+  border: none;
+  background: crimson;
+  color: white;
+  border-radius: 4px;
+  margin-top: 20px;
+  cursor: pointer;
 }
 
 pre {
@@ -40,45 +107,9 @@ pre {
   border-radius: 4px;
 }
 
-.itemContainer {
+textarea {
+  border-radius: 4px;
+  border: none;
+  padding: 8px;
   width: 100%;
-  text-align: start;
-}
-
-.itemContainer label {
-  text-align: start;
-  font-size: 18px;
-  margin-bottom: 10px;
-  text-decoration: underline;
-}
-
-.itemContainer > h3 {
-  text-align: start;
-  font-weight: 500;
-}
-
-.itemContainer > textarea,
-.itemContainer > input {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.btnContainer {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  margin: 10px 0 30px 0;
-}
-
-.btnContainer > button {
-  width: 25%;
-}
-
-.btnContainer > span {
-  font-size: 12px;
-  background-color: hotpink;
-  color: #fff;
-  padding: 6px;
-  border-radius: 2px;
 }
